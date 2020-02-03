@@ -2,13 +2,16 @@
   <div class="row">
     <div class="col-lg-8 m-auto">
       <card :title="$t('login')">
+        <alert-error :form="form" message="Your credentials <b>(email/password)</b> information <b>does not match</b> or <b>wrong</b>"></alert-error>
         <form @submit.prevent="login" @keydown="form.onKeydown($event)">
           <!-- Email -->
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-right">{{ $t('email') }}</label>
             <div class="col-md-7">
-              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email">
-              <has-error :form="form" field="email" />
+              <input v-model="form.email" type="email" name="email" class="form-control">
+              <!-- 
+                :class="{ 'is-invalid': form.errors.has('email') }" -->
+              <!-- <has-error :form="form" field="email"/> -->
             </div>
           </div>
 
@@ -16,14 +19,16 @@
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-right">{{ $t('password') }}</label>
             <div class="col-md-7">
-              <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
-              <has-error :form="form" field="password" />
+              <input v-model="form.password" type="password" name="password" class="form-control">
+              <!--  
+                :class="{ 'is-invalid': form.errors.has('password') }"> -->
+              <!-- <has-error :form="form" field="password"/> -->
             </div>
           </div>
 
           <!-- Remember Me -->
           <div class="form-group row">
-            <div class="col-md-3" />
+            <div class="col-md-3"></div>
             <div class="col-md-7 d-flex">
               <checkbox v-model="remember" name="remember">
                 {{ $t('remember_me') }}
@@ -43,7 +48,7 @@
               </v-button>
 
               <!-- GitHub Login Button -->
-              <login-with-github />
+              <login-with-github/>
             </div>
           </div>
         </form>
@@ -76,10 +81,37 @@ export default {
   }),
 
   methods: {
+    // login(){
+    //   this.form.post('/api/login')
+    //     .then(({data}) => {
+    //       console.log(data);
+    //       // Save the token.
+    //       this.$store.dispatch('auth/saveToken', {
+    //         token: data.token,
+    //         remember: this.remember
+    //       })
+
+    //       // Fetch the user.
+    //       this.$store.dispatch('auth/fetchUser')
+    //         .then(function(){
+    //           // Redirect home.
+    //           this.$router.push({ name: 'home' })
+    //         })
+    //         .catch(e => {
+    //           console.log(e)
+    //         })
+
+          
+    //     })
+    //     .catch(e => {
+    //       console.log(e);
+    //     })
+    // }
+
     async login () {
       // Submit the form.
       const { data } = await this.form.post('/api/login')
-
+     
       // Save the token.
       this.$store.dispatch('auth/saveToken', {
         token: data.token,

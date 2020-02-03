@@ -1,29 +1,13 @@
 <template>
   <div>
-    <div class="top-right links">
-      <template v-if="authenticated">
-        <router-link :to="{ name: 'home' }">
-          {{ $t('home') }}
-        </router-link>
-      </template>
-      <template v-else>
-        <router-link :to="{ name: 'login' }">
-          {{ $t('login') }}
-        </router-link>
-        <router-link :to="{ name: 'register' }">
-          {{ $t('register') }}
-        </router-link>
-      </template>
-    </div>
-
     <div class="text-center">
-      <div class="title mb-4">
+      <div class="title">
         {{ title }}
       </div>
-
-      <div class="links">
-        <a href="https://github.com/cretueusebiu/laravel-vue-spa">github.com/cretueusebiu/laravel-vue-spa</a>
+      <div class="mb-4">
+        {{ $t('tagline') }}
       </div>
+
     </div>
   </div>
 </template>
@@ -32,18 +16,17 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  layout: 'basic',
 
   metaInfo () {
     return { title: this.$t('home') }
   },
 
-  data: () => ({
-    title: window.config.appName
-  }),
-
   computed: mapGetters({
     authenticated: 'auth/check'
+  }),
+
+  data: () => ({
+    title: window.config.appName
   })
 }
 </script>
@@ -56,6 +39,6 @@ export default {
 }
 
 .title {
-  font-size: 85px;
+  font-size: 7rem;
 }
 </style>

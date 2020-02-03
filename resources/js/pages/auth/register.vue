@@ -1,19 +1,15 @@
 <template>
   <div class="row">
     <div class="col-lg-8 m-auto">
-      <card v-if="mustVerifyEmail" :title="$t('register')">
-        <div class="alert alert-success" role="alert">
-          {{ $t('verify_email_address') }}
-        </div>
-      </card>
-      <card v-else :title="$t('register')">
+      <card :title="$t('register')">
         <form @submit.prevent="register" @keydown="form.onKeydown($event)">
           <!-- Name -->
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-right">{{ $t('name') }}</label>
             <div class="col-md-7">
-              <input v-model="form.name" :class="{ 'is-invalid': form.errors.has('name') }" class="form-control" type="text" name="name">
-              <has-error :form="form" field="name" />
+              <input v-model="form.name" type="text" name="name" class="form-control"
+                :class="{ 'is-invalid': form.errors.has('name') }">
+              <has-error :form="form" field="name"/>
             </div>
           </div>
 
@@ -21,8 +17,19 @@
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-right">{{ $t('email') }}</label>
             <div class="col-md-7">
-              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email">
-              <has-error :form="form" field="email" />
+              <input v-model="form.email" type="email" name="email" class="form-control"
+                :class="{ 'is-invalid': form.errors.has('email') }">
+              <has-error :form="form" field="email"/>
+            </div>
+          </div>
+
+          <!-- Organization -->
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label text-md-right">{{ $t('organization') }}</label>
+            <div class="col-md-7">
+              <input v-model="form.organization" type="organization" name="organization" class="form-control"
+                :class="{ 'is-invalid': form.errors.has('organization') }">
+              <has-error :form="form" field="organization"/>
             </div>
           </div>
 
@@ -30,8 +37,9 @@
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-right">{{ $t('password') }}</label>
             <div class="col-md-7">
-              <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
-              <has-error :form="form" field="password" />
+              <input v-model="form.password" type="password" name="password" class="form-control"
+                :class="{ 'is-invalid': form.errors.has('password') }">
+              <has-error :form="form" field="password"/>
             </div>
           </div>
 
@@ -39,8 +47,9 @@
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-right">{{ $t('confirm_password') }}</label>
             <div class="col-md-7">
-              <input v-model="form.password_confirmation" :class="{ 'is-invalid': form.errors.has('password_confirmation') }" class="form-control" type="password" name="password_confirmation">
-              <has-error :form="form" field="password_confirmation" />
+              <input v-model="form.password_confirmation" type="password" name="password_confirmation" class="form-control"
+                :class="{ 'is-invalid': form.errors.has('password_confirmation') }">
+              <has-error :form="form" field="password_confirmation"/>
             </div>
           </div>
 
@@ -52,7 +61,7 @@
               </v-button>
 
               <!-- GitHub Register Button -->
-              <login-with-github />
+              <login-with-github/>
             </div>
           </div>
         </form>
@@ -64,6 +73,7 @@
 <script>
 import Form from 'vform'
 import LoginWithGithub from '~/components/LoginWithGithub'
+import axios from 'axios'
 
 export default {
   middleware: 'guest',
@@ -80,23 +90,28 @@ export default {
     form: new Form({
       name: '',
       email: '',
+      organization: '',
       password: '',
       password_confirmation: ''
-    }),
-    mustVerifyEmail: false
+    })
   }),
 
   methods: {
     async register () {
       // Register the user.
-      const { data } = await this.form.post('/api/register')
-
-      // Must verify email fist.
-      if (data.status) {
-        this.mustVerifyEmail = true
-      } else {
+      try{
+        // const { data } = await this.form.post('/api/register')
+        let postData = {
+          name: this.form.name,
+          email: this.form.email,
+          organization: this.form.organization,
+          password: this.form.password,
+          password_confirmation: this.form.password_confirmation,
+        }
+        const { data } = await axios.post('/api/register', postData)
+      
         // Log in the user.
-        const { data: { token } } = await this.form.post('/api/login')
+        const { data: { token }} = await this.form.post('/api/login')
 
         // Save the token.
         this.$store.dispatch('auth/saveToken', { token })
@@ -106,6 +121,12 @@ export default {
 
         // Redirect home.
         this.$router.push({ name: 'home' })
+      }catch(e){
+        console.error(e)
+        if(e.response.data.errors){
+          let errors = e.response.data.errors
+          this.form.errors.set(errors)
+        }
       }
     }
   }

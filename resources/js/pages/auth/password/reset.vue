@@ -3,14 +3,15 @@
     <div class="col-lg-8 m-auto">
       <card :title="$t('reset_password')">
         <form @submit.prevent="reset" @keydown="form.onKeydown($event)">
-          <alert-success :form="form" :message="status" />
+          <alert-success :form="form" :message="status"/>
 
           <!-- Email -->
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-right">{{ $t('email') }}</label>
             <div class="col-md-7">
-              <input v-model="form.email" :class="{ 'is-invalid': form.errors.has('email') }" class="form-control" type="email" name="email" readonly>
-              <has-error :form="form" field="email" />
+              <input v-model="form.email" type="email" name="email" class="form-control"
+                :class="{ 'is-invalid': form.errors.has('email') }" readonly>
+              <has-error :form="form" field="email"/>
             </div>
           </div>
 
@@ -18,8 +19,9 @@
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-right">{{ $t('password') }}</label>
             <div class="col-md-7">
-              <input v-model="form.password" :class="{ 'is-invalid': form.errors.has('password') }" class="form-control" type="password" name="password">
-              <has-error :form="form" field="password" />
+              <input v-model="form.password" type="password" name="password" class="form-control"
+                :class="{ 'is-invalid': form.errors.has('password') }">
+              <has-error :form="form" field="password"/>
             </div>
           </div>
 
@@ -27,8 +29,9 @@
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-right">{{ $t('confirm_password') }}</label>
             <div class="col-md-7">
-              <input v-model="form.password_confirmation" :class="{ 'is-invalid': form.errors.has('password_confirmation') }" class="form-control" type="password" name="password_confirmation">
-              <has-error :form="form" field="password_confirmation" />
+              <input v-model="form.password_confirmation" type="password" name="password_confirmation" class="form-control"
+                :class="{ 'is-invalid': form.errors.has('password_confirmation') }">
+              <has-error :form="form" field="password_confirmation"/>
             </div>
           </div>
 
