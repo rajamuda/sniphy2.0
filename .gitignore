@@ -7,6 +7,7 @@
 /public/dist
 /public/build
 /public/mix-manifest.json
+/resources/jobs
 .env
 .phpunit.result.cache
 Homestead.json
