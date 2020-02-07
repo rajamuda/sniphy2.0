@@ -30,11 +30,17 @@ class JobsController extends Controller
     public function getSequences(Request $request){
         $user_id = $request->user()->id;
 
-        $refs = Sequence::where(function($q) use($user_id) { $q->where('user_id', $user_id)->orWhere('public', true); })->where('type', 'references')->get(['name']);
+        $refs = Sequence::where(function($q) use($user_id) { 
+                $q->where([['user_id', '=' , $user_id], ['public', '!=', '-1']])->orWhere('public', true); 
+            })->where('type', 'references')->get(['name']);
 
-        $reads = Sequence::where(function($q) use($user_id) { $q->where('user_id', $user_id)->orWhere('public', true); })->where('type', 'reads')->get(['name']);
+        $reads = Sequence::where(function($q) use($user_id) { 
+                $q->where([['user_id', '=' , $user_id], ['public', '!=', '-1']])->orWhere('public', true); 
+            })->where('type', 'reads')->get(['name']);
 
-        $reads_pair = Sequence::where(function($q) use($user_id) { $q->where('user_id', $user_id)->orWhere('public', true); })->where('type', 'reads_pair')->get(['name']);
+        $reads_pair = Sequence::where(function($q) use($user_id) { 
+                $q->where([['user_id', '=' , $user_id], ['public', '!=', '-1']])->orWhere('public', true); 
+            })->where('type', 'reads_pair')->get(['name']);
 
         return ['refs' => $refs, 'reads' => $reads, 'reads2' => $reads_pair];
     }

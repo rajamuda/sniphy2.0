@@ -3,7 +3,7 @@
 		<form :action="targetUrl" method="POST">
 		</form>
 	  <div class="row" v-if="resumable.support">
-        <div class="col-lg-offset-2 col-lg-8">
+        <div class="col-lg-offset-2 col-sm-8 col-lg-12">
 	        	<span v-if="uploadStatus === null">
 	            <button v-if="resumable.files.length === 0" type="button" class="btn btn-success" id="add-file-btn" ref="addFile">
 	              <fa icon='plus-circle' fixed-width/> Add file
@@ -13,7 +13,7 @@
 	            </button>
 	          </span>
 
-            <span v-if="uploadStatus === null || uploadStatus === 'paused'">
+            <span v-if="uploadStatus === null || uploadStatus === 'paused' || uploadStatus === 'failed'">
 	            <button v-if="progressBar <= 0" type="button" class="btn btn-primary" id="start-upload-btn" @click="startUpload">
 	              <fa icon='upload' fixed-width/>
 	              	Start upload
@@ -32,15 +32,16 @@
 	            </button>
 	          </span>
 	          <span v-else>
-	          	<div class="alert" :class="{ 'alert-success': (uploadStatus) === 'success', 'alert-danger': (uploadStatus === 'failed') }">
-	          		<span v-if="uploadStatus === 'success'"> <fa icon='check-circle' fixed-width/> Success uploading files! </span>
-	          		<span v-if="uploadStatus === 'failed'"> <fa icon='times-circle' fixed-width/> Failed uploading files! Please, try again in another minutes. It might be there is server issue or your current network connection is unstable. </span>
-	          	</div>
 	          </span>
+
+          	<div v-if="(uploadStatus == 'failed' || uploadStatus == 'success') && progressBar > 0" class="alert" :class="{ 'alert-success': (uploadStatus) === 'success', 'alert-danger': (uploadStatus === 'failed') }">
+          		<span v-if="uploadStatus === 'success'"> <fa icon='check-circle' fixed-width/> Success uploading files! </span>
+          		<span v-if="uploadStatus === 'failed'"> <fa icon='times-circle' fixed-width/> Failed uploading files! Please, try again in another minutes. Error Messages: <b>{{ errMessage }}</b></span>
+          	</div>
         </div>
  
  
-        <div class="col-lg-offset-2 col-lg-8" :class="{ 'd-none': (progressBar === null) }" >
+        <div class="col-lg-offset-2 col-sm-8 col-lg-12" :class="{ 'd-none': (progressBar === null) }" >
           <p>
             <div class="progress" id="upload-progress">
               <div class="progress-bar progress-bar-striped" role="progressbar" 
@@ -80,22 +81,27 @@ export default {
 		targetUrl: null,
 		progressBar: null,
 		uploadStatus: null, // 'success', 'failed', 'paused', 'progress', null (if not processed or canceled)
+		errMessage: "None"
 	}),
 
 	computed: {
 		fileSize() {
-			if (this.resumable.files[0].size < 1024) {
-				return this.resumable.files[0].size + ' Bytes'
+			if(this.resumable.files.length){
+				if (this.resumable.files[0].size < 1024) {
+					return this.resumable.files[0].size + ' Bytes'
 
-			} else if (this.resumable.files[0].size < (1024 * 1024)) {
-				return (this.resumable.files[0].size/(1024)).toFixed(3) + ' KB'
+				} else if (this.resumable.files[0].size < (1024 * 1024)) {
+					return (this.resumable.files[0].size/(1024)).toFixed(3) + ' KB'
 
-			} else if (this.resumable.files[0].size < (1024 * 1024 * 1024)) {
-				return (this.resumable.files[0].size/(1024 * 1024)).toFixed(3) + ' MB'
+				} else if (this.resumable.files[0].size < (1024 * 1024 * 1024)) {
+					return (this.resumable.files[0].size/(1024 * 1024)).toFixed(3) + ' MB'
 
+				} else {
+					return (this.resumable.files[0].size/(1024 * 1024 * 1024)).toFixed(3) + ' GB'
+
+				}
 			} else {
-				return (this.resumable.files[0].size/(1024 * 1024 * 1024)).toFixed(3) + ' GB'
-
+				return 0
 			}
 		}
 	},
@@ -119,9 +125,10 @@ export default {
   		this.resumable.removeFile(this.resumable.files[0])
   		this.progressBar = null
   		this.uplaodStatus = null
+  		this.errMessage = "None"
   	},
 
-  	fileAdded (file) {
+  	fileAdded (file, event) {
   		if (this.isFileValid(file.fileName)) {
   			this.progressBar = 0
   		} else {
@@ -130,13 +137,14 @@ export default {
   		}
   	},
 
-  	fileSuccess (file) {
+  	fileSuccess (file, message) {
   		this.progressBar = 100
   		this.uploadStatus = 'success'
   	},
 
-  	fileError (file) {
+  	fileError (file, message) {
   		this.uploadStatus = 'failed'
+  		this.errMessage = message
   	},
 
   	onProgress (progress) {
@@ -146,23 +154,23 @@ export default {
   	cancelUpload () {
   		if(this.resumable.files.length > 0 && this.resumable.isUploading()){
 	  		this.resumable.cancel()
-	  		this.uploadStatus = null
-	  		this.progressBar = null
 	  		this.remove()
 	  	}
   	},
 
   	isFileValid (filename) {
-  		return true
-  		// return filename.includes("fa") || filename.includes("fasta") || filename.includes("fastq")
+  		// return true
+  		return filename.includes("fa") || filename.includes("fasta") || filename.includes("fastq")
   	}
   },
 
   mounted () {
   	this.resumable = new Resumable({
-				target: '/api/upload/test',
-				chunkSize: 50*1024*1024, // 50 MB
-				maxFiles: 1
+				target: '/api/upload/do-upload',
+				chunkSize: 10*1024*1024, // 10 MB
+				maxFiles: 1,
+				maxFileSize: 1*1024*1024*1024,
+				simultaneousUploads: 2,
 			})
 
   	if(this.resumable.support){
@@ -172,17 +180,17 @@ export default {
 
 	  	var self = this
 		  this.resumable.on('fileAdded', function(file, event) {
-		  	self.fileAdded(file)
+		  	self.fileAdded(file, event)
 		  	console.log('added')
 		  })
 
 		  this.resumable.on('fileSuccess', function(file, message) {
-		  	self.fileSuccess(file)
+		  	self.fileSuccess(file, message)
 		  	console.log('success')
 		  })
 
 		  this.resumable.on('fileError', function(file, message) {
-		  	self.fileError(file)
+		  	self.fileError(file, message)
 		  	console.log('error')
 		  })
 

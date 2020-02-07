@@ -44,6 +44,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('db-snp/detail/{id}', 'ExploreController@getSnpDetail');
 
     Route::any('upload/test', 'UploadController@test');
+    Route::any('upload/do-upload', 'UploadController@upload');
 
     Route::get('test', 'Jobs\JobsController@coba');
 
@@ -59,12 +60,13 @@ Route::group(['middleware' => 'guest:api'], function () {
 
     Route::post('oauth/{driver}', 'Auth\OAuthController@redirectToProvider');
     Route::get('oauth/{driver}/callback', 'Auth\OAuthController@handleProviderCallback')->name('oauth.callback');
-    
-    Route::get('testaja', function(){
-	if(app()->isLocal()) echo "Local";
-	else echo "Prod";
-	echo config('app.env');
-    });
+});
+
+Route::get('testaja', function(){
+    // if(app()->isLocal()) echo "Local";
+    // else echo "Prod";
+    // echo config('app.env');
+    echo resource_path('');
 });
 
 Route::get('login', function () {

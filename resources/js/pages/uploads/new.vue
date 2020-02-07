@@ -4,7 +4,7 @@
 	  	<fa icon="info-circle" fixed-width/> You can only upload FASTA (<b>.fa or .fasta</b>) or FASTQ (<b>.fastq</b>) format 
 	  </div>
 	  <div>
-	  	<uploader targetUrl="/api/upload/test">
+	  	<uploader targetUrl="/api/upload/do-upload">
 	  	</uploader>
 	  </div>
 	</card>
