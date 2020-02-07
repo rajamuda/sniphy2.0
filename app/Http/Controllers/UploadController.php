@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\sequence;
+use App\Sequence;
 
 class UploadController extends Controller
 {
@@ -71,8 +71,21 @@ class UploadController extends Controller
 		// check that all the parts are present
 		// If the Size of all the chunks on the server is equal to the size of the file uploaded.
 		if ($total_files_on_server_size >= $totalSize) {
-		// create the final destination file 
-			if (($fp = fopen($save_dir.'/'.$fileName, 'w')) !== false) {
+			$savedName = random_int(101,998)."_".$fileName
+
+			$sequence = new Sequence;
+			$sequence->name = $savedName;
+			$sequence->type = $types;
+			$sequence->public = -1; // unpublished
+			$sequence->user_id = auth()->user()->id;
+			$sequence->created_at = date('Y-m-d H:i:s');
+
+			if(!$sequence->save()){
+				return response(['status' => false , 'reason' => 'InsertDBFailed', 'message' => 'Fail to insert file information into database'], 500);
+			}
+
+			// create the final destination file 
+			if (($fp = fopen($save_dir.'/'.$savedName, 'w')) !== false) {
 				for ($i=1; $i<=$total_files; $i++) {
 					fwrite($fp, file_get_contents($temp_dir.'/'.$fileName.'.part'.$i));
 					// _log('writing chunk '.$i);
@@ -81,16 +94,6 @@ class UploadController extends Controller
 			} else {
 				// _log('cannot create the destination file');
 				return response(['status' => false , 'reason' => 'MergeFileFailed', 'message' => 'Fail to merge chunks'], 500);
-			}
-
-			$sequence = new Sequence;
-			$sequence->name = $fileName;
-			$sequence->type = $types;
-			$sequence->public = -1; // unpublished
-			$sequence->user_id = auth()->user()->id;
-			$sequence->created_at = date('Y-m-d H:i:s');
-			if(!$sequence->save()){
-				return response(['status' => false , 'reason' => 'InsertDBFailed', 'message' => 'Fail to insert file information into database'], 500);
 			}
 
 			// rename the temporary directory (to avoid access from other 
