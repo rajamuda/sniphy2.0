@@ -71,7 +71,7 @@ class UploadController extends Controller
 		// check that all the parts are present
 		// If the Size of all the chunks on the server is equal to the size of the file uploaded.
 		if ($total_files_on_server_size >= $totalSize) {
-			$savedName = random_int(101,998)."_".$fileName
+			$savedName = random_int(101,998)."_".$fileName;
 
 			$sequence = new Sequence;
 			$sequence->name = $savedName;
