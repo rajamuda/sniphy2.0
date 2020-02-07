@@ -34,6 +34,11 @@
               </router-link>
             </li>
             <li class="nav-item">
+              <router-link :to="{ name: 'upload.new' }" class="nav-link" active-class="active">
+                {{ $t('upload') }}
+              </router-link>
+            </li>
+            <li class="nav-item">
               <router-link :to="{ name: 'about' }" class="nav-link" active-class="active">
                 {{ $t('about') }}
               </router-link>

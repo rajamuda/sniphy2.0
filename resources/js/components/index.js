@@ -3,6 +3,7 @@ import Card from './Card'
 import Child from './Child'
 import Button from './Button'
 import Checkbox from './Checkbox'
+import Uploader from './Uploader'
 import Footer from './Footer'
 import { HasError, AlertError, AlertSuccess } from 'vform'
 
@@ -12,6 +13,7 @@ import { HasError, AlertError, AlertSuccess } from 'vform'
   Child,
   Button,
   Checkbox,
+  Uploader,
   HasError,
   AlertError,
   AlertSuccess,

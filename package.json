@@ -30,6 +30,7 @@
     "vue-meta": "^1.6.0",
     "vue-multiselect": "^2.1.6",
     "vue-router": "^3.1.5",
+    "vue-upload-component": "^2.8.20",
     "vuex": "^3.1.2",
     "vuex-router-sync": "^5.0.0"
   },
@@ -45,8 +46,8 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^5.2.3",
-    "laravel-mix": "^4.1.4",
-    "laravel-mix-versionhash": "^1.1.2",
+    "laravel-mix": "^5.0.1",
+    "laravel-mix-versionhash": "1.0.8",
     "resolve-url-loader": "^2.3.1",
     "sass": "^1.25.0",
     "sass-loader": "^7.3.1",

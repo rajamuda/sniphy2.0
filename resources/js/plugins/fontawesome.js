@@ -5,7 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 // import { } from '@fortawesome/free-regular-svg-icons'
 
 import {
-  faUser, faLock, faSignOutAlt, faCog
+  faUser, faLock, faSignOutAlt, faCog, faTasks, faPlusCircle, faCaretSquareDown,
+  faTree, faUpload, faList, faPauseCircle, faPlay, faInfoCircle, faTimesCircle, faSyncAlt,
+  faCheckCircle
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -13,7 +15,9 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 
 library.add(
-  faUser, faLock, faSignOutAlt, faCog, faGithub
+  faUser, faLock, faSignOutAlt, faCog, faGithub, faTasks, faPlusCircle, faCaretSquareDown,
+  faTree, faUpload, faList, faPauseCircle, faPlay, faInfoCircle, faTimesCircle, faSyncAlt,
+  faCheckCircle
 )
 
 Vue.component('fa', FontAwesomeIcon)

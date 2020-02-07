@@ -115,5 +115,9 @@
   "download_tree": "Download Tree Newick File",
   "download_image": "Download Image",
 
+  "upload": "Upload",
+  "upload_new": "Upload Sequences",
+  "upload_list": "Uploaded Sequences",
+
   "copyright": "SNiPhy"
 }

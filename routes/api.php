@@ -43,6 +43,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('db-snp/{job_id}', 'ExploreController@getSnpInfo');
     Route::get('db-snp/detail/{id}', 'ExploreController@getSnpDetail');
 
+    Route::any('upload/test', 'UploadController@test');
+
     Route::get('test', 'Jobs\JobsController@coba');
 
     Route::get('user/activation_status', 'Jobs\JobsController@activationStatus');
